@@ -57,7 +57,7 @@ const hyperswarmRouter = async (network) => {
     resolve({
       join,
       leave,
-      instanceOf: 'hyperswarmRouter'
+      isHyperswarmRouter: true
     });
 
   });
