@@ -46,7 +46,10 @@ const hyperswarmRouter = async (network) => {
     function leave(topic) {
       if (!handlers[topic]) throw new Error(`trying to leave a topic:'${topic}' that does not exist would cause wierd results.`);
       delete handlers[topic];
-      return () => undefined;
+      return () => {
+        console.warn(`Attepting to broadcast to a topic:'${topic}' that has been deleted`);
+        return null;
+      };
     }
 
     const discovery = swarm.join(b4a.alloc(32).fill(network), { server: true, client: true });
