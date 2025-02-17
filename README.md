@@ -18,7 +18,7 @@ let broadcast1, broadcast2;
 
 // connect to peers on 'topic1'
 broadcast1 = await router.join('topic1', async function handler1(data) {
-  // get and handle broadcasts from peers on 'topic1' here
+  // receive and handle broadcasts from peers on 'topic1' here
   console.log(data);
 });
 
@@ -27,7 +27,7 @@ await broadcast1({ info: 'xyz' });
 
 // connect to peers on 'topic2'
 broadcast2 = await router.join('topic2', async function handler2(data) {
-  // get and handle broadcasts from peers on 'topic2' here
+  // receive and handle broadcasts from peers on 'topic2' here
   console.log(data);
 });
 
