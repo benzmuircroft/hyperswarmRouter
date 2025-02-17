@@ -38,7 +38,7 @@ await broadcast2({ type: 'dog', age: 3, array: [0, 1, 2, 3] });
 // Second user
 const network = 'c915296031bf40b58ef7f1d6b883512e799c1982b83acdc7ce27a2079a8c196f'; // a hard-coded 64 character hex string
 const router = await require('hyperswarmRouter')(network);
-let broadcast2;
+let broadcast2; // isn't interested in 'topic1'
 
 // connect to peers on 'topic2'
 broadcast2 = router.join('topic2', async function handler2(data) {
