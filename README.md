@@ -7,9 +7,6 @@ Allows many topic handlers for different modules over one hyperswarm. Just plug 
 npm install "github:benzmuircroft/hyperswarmRouter"
 ```
 
-## Usage
-See: [hyperswarmCRDT/README](https://github.com/benzmuircroft/hyperswarmCRDT/blob/main/README.md)
-
 ## API
 ```js
 const network = 'c915296031bf40b58ef7f1d6b883512e799c1982b83acdc7ce27a2079a8c196f'; // a hard-coded 64 character hex string
@@ -34,6 +31,9 @@ broadcast2 = await router.join('topic2', async function handler2(data) {
 // now you can broadcast data to peers on 'topic2'
 await broadcast2({ type: 'dog', age: 3, array: [0, 1, 2, 3] });
 ```
+
+## Used By
+[hyperswarmCRDT](https://github.com/benzmuircroft/hyperswarmCRDT)
 
 ## TODO
 
