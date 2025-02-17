@@ -14,7 +14,7 @@ const router = await require('hyperswarmRouter')(network);
 let broadcast1, broadcast2;
 
 // connect to peers on 'topic1'
-broadcast1 = await router.join('topic1', async function handler1(data) {
+broadcast1 = router.join('topic1', async function handler1(data) {
   // receive and handle broadcasts from peers on 'topic1' here
   console.log(data);
 });
@@ -23,11 +23,11 @@ broadcast1 = await router.join('topic1', async function handler1(data) {
 await broadcast1({ info: 'xyz' });
 
 // connect to peers on 'topic2'
-broadcast2 = await router.join('topic2', async function handler2(data) {
+broadcast2 = router.join('topic2', async function handler2(data) {
   // receive and handle broadcasts from peers on 'topic2' here
   console.log(data);
   // leave 'topic2'
-  broadcast2 = await router.leave('topic2'); // null
+  broadcast2 = router.leave('topic2'); // null
 });
 
 // now you can broadcast data to peers on 'topic2'
