@@ -43,6 +43,12 @@ const hyperswarmRouter = async (network) => {
       return broadcaster;
     }
 
+    function leave(topic) {
+      if (!handlers[topic]) throw new Error(`trying to leave a topic:'${topic}' that does not exist would cause wierd results.`);
+      delete handlers[topic];
+      return null;
+    }
+
     const discovery = swarm.join(b4a.alloc(32).fill(network), { server: true, client: true });
     await discovery.flushed();
     await swarm.flush();
@@ -50,6 +56,7 @@ const hyperswarmRouter = async (network) => {
 
     resolve({
       join,
+      leave,
       instanceOf: 'hyperswarmRouter'
     });
 
