@@ -11,7 +11,7 @@ npm install "github:benzmuircroft/hyperswarmRouter"
 See: [hyperswarmCRDT/README](https://github.com/benzmuircroft/hyperswarmCRDT/blob/main/README.md)
 
 ## API
-```
+```js
 const network = 'c915296031bf40b58ef7f1d6b883512e799c1982b83acdc7ce27a2079a8c196f'; // a hard-coded 64 character hex string
 const router = await require('hyperswarmRouter')(network);
 let broadcast1, broadcast2;
