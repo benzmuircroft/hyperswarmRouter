@@ -26,6 +26,8 @@ await broadcast1({ info: 'xyz' });
 broadcast2 = await router.join('topic2', async function handler2(data) {
   // receive and handle broadcasts from peers on 'topic2' here
   console.log(data);
+  // leave 'topic2'
+  broadcast2 = await router.leave('topic2'); // null
 });
 
 // now you can broadcast data to peers on 'topic2'
