@@ -7,9 +7,9 @@ Allows many topic handlers for different modules over one hyperswarm. Just plug 
 
 ## TODO
 
-- add to [userbase](https://github.com/benzmuircroft/userbase) 
-- add to [hypercache](https://github.com/benzmuircroft/hypercache)
+- add to [userbase](https://github.com/benzmuircroft/userbase)
 - add to [hyperdown](https://github.com/benzmuircroft/hyperdown)
+- add to [hypercache](https://github.com/benzmuircroft/hypercache) #WIP
 
 ## Installation
 ```
