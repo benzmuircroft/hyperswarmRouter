@@ -2,6 +2,15 @@
 
 Allows many topic handlers for different modules over one hyperswarm. Just plug this one swarm into all of them.
 
+## Used By
+[hyperswarmCRDT](https://github.com/benzmuircroft/hyperswarmCRDT)
+
+## TODO
+
+- add to [userbase](https://github.com/benzmuircroft/userbase) 
+- add to [hypercache](https://github.com/benzmuircroft/hypercache)
+- add to [hyperdown](https://github.com/benzmuircroft/hyperdown)
+
 ## Installation
 ```
 npm install "github:benzmuircroft/hyperswarmRouter"
@@ -51,12 +60,3 @@ broadcast2 = router.join('topic2', async function handler2(data) {
 // now you can broadcast data to peers on 'topic2'
 await broadcast2({ type: 'cat', age: 9, array: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] });
 ```
-
-## Used By
-[hyperswarmCRDT](https://github.com/benzmuircroft/hyperswarmCRDT)
-
-## TODO
-
-- add to [userbase](https://github.com/benzmuircroft/userbase) 
-- add to [hypercache](https://github.com/benzmuircroft/hypercache)
-- add to [hyperdown](https://github.com/benzmuircroft/hyperdown)
