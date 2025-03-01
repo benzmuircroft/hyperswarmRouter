@@ -16,26 +16,27 @@ const hyperswarmRouter = async (network) => {
     async function broadcast(topic, data) {
       const encoded = b4a.from(cbor.encode({ topic, data }));
       return new Promise(async (done) => {
-        for (const peer of Object.values(peers)) {
+        for (const peer of Object.values(peers[topic])) {
           peer.write(encoded);
         }
         done();
       });
-    };
+    }
 
     swarm.on('connection', (peer, info) => {
       const id = b4a.toString(peer.remotePublicKey, 'hex');
-      peers[id] = peer;
-      peer.once('close', () => delete peers[id]);
+      peers[network][id] = peer;
+      peer.on('close', () => delete peers[network][id]);
       peer.on('data', async d => {
         const decoded = cbor.decode(b4a.from(d));
         if (handlers[decoded.topic]) await handlers[decoded.topic](decoded.data);
-      });
+      })
       peer.on('error', e => console.log(`Connection error: ${e}`));
     });
 
     function join(topic, handler) {
       handlers[topic] = handler;
+      peers[topic] = {};
       const broadcaster = async (data) => {
         // console.log(topic, 'broadcasting ...'); confirmation
         await broadcast(topic, data);
@@ -46,6 +47,7 @@ const hyperswarmRouter = async (network) => {
     function leave(topic) {
       if (!handlers[topic]) throw new Error(`trying to leave a topic:'${topic}' that does not exist would cause wierd results.`);
       delete handlers[topic];
+      delete peers[topic];
       return () => {
         console.warn(`Attepting to broadcast to a topic:'${topic}' that has been deleted`);
         return null;
