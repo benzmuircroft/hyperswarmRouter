@@ -113,3 +113,5 @@ const hyperswarmRouter = async (network) => {
 };
 
 module.exports = hyperswarmRouter;
+
+// todo: use https://github.com/holepunchto/protomux
