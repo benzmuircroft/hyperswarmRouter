@@ -37,7 +37,7 @@ const hyperswarmRouter = async (network) => {
     async function broadcast(topic, data) {
       const encoded = b4a.from(cbor.encode({ topic, data }));
       return new Promise(async (done) => {
-        for (const peer of Object.values(peers)) {
+        for (const peer of Object.values(peers[topic])) {
           peer.write(encoded);
         }
         done();
@@ -48,18 +48,30 @@ const hyperswarmRouter = async (network) => {
     swarm.on('connection', (peer, info) => {
       const id = b4a.toString(peer.remotePublicKey, 'hex');
       peers[id] = peer; // Add peer to the peers object
-
       // Remove peer from the peers object when the connection closes
       peer.once('close', () => delete peers[id]);
-
       // Handle incoming data from the peer
+      //
+      //
+      /*
+      * setup the peers topic
+      * and run the handler that existed on join
+      * this might be the first message after join
+      * so the first message you get will install your peers for the topic
+      */
       peer.on('data', async d => {
         const decoded = cbor.decode(b4a.from(d));
-        if (handlers[decoded.topic]) await handlers[decoded.topic](decoded.data);
+        if (handlers[decoded.topic]) {
+          if (!peers[decoded.topic]) peers[decoded.topic] = {}; // <<<
+          peers[decoded.topic][id] = peer; // add peer to topic // <<<
+          await handlers[decoded.topic](decoded.data);
+        }
       });
-
       // Log connection errors
       peer.on('error', e => console.log(`Connection error: ${e}`));
+      //
+      // how peers[topic] = peer, ?topic? or initial/first message ^^^^
+      //
     });
 
     /**
@@ -71,10 +83,10 @@ const hyperswarmRouter = async (network) => {
      */
     function join(topic, handler) {
       handlers[topic] = handler; // Register the handler for the topic
-
+      // peers[topic] = {}; // todo: make obvious that the first message will connect
       // Return a broadcaster function for the topic
       const broadcaster = async (data) => {
-        await broadcast(topic, data);
+        await broadcast(topic, data); // 
       };
       return broadcaster;
     }
@@ -85,10 +97,10 @@ const hyperswarmRouter = async (network) => {
      * @param {string} topic - The topic to leave.
      * @returns {Function} - A dummy function that warns if attempting to broadcast to the deleted topic.
      */
-    function leave(topic) {
+    function leave(topic) { // todo: with id of peers[topic][id]
       if (!handlers[topic]) throw new Error(`trying to leave a topic:'${topic}' that does not exist would cause weird results.`);
       delete handlers[topic]; // Remove the topic handler
-
+      delete peers[topic]; // delete all of your peers
       // Return a dummy function to warn about broadcasting to a deleted topic
       return () => {
         console.warn(`Attempting to broadcast to a topic:'${topic}' that has been deleted`);
