@@ -9,20 +9,16 @@
  */
 const hyperswarmRouter = async (network) => {
   return new Promise(async (resolve) => {
-
     // Validate the network parameter
     if (typeof network !== 'string' && network.length != 64) throw new Error('network must be a 64 character hex string');
-
     // Import required modules
     const Hyperswarm = require('hyperswarm');
     const goodbye = (await import('graceful-goodbye')).default;
     const b4a = require('b4a');
     const cbor = require('cbor');
-    
     // Initialize Hyperswarm and set up graceful shutdown
     const swarm = new Hyperswarm();
     goodbye(() => swarm.destroy());
-
     // Store connected peers and topic handlers
     const peers = {};
     const handlers = {};
