@@ -1,28 +1,24 @@
 /**
- * hyperswarmRouter - A module to create a Hyperswarm-based router for decentralized peer-to-peer communication.
- * 
- * This module allows peers to join a network, broadcast messages to specific topics, and handle incoming messages.
- * It uses Hyperswarm for peer discovery and connection management, CBOR for message encoding/decoding, and b4a for buffer manipulation.
- * 
- * @param {string} network - A 64-character hex string representing the network identifier.
- * @returns {Promise<Object>} - Resolves to an object containing methods to join/leave topics and a flag indicating it's a Hyperswarm router.
- */
+* hyperswarmRouter - A module to create a Hyperswarm-based router for decentralized peer-to-peer communication.
+* 
+* This module allows peers to join a network, broadcast messages to specific topics, and handle incoming messages.
+* It uses Hyperswarm for peer discovery and connection management, CBOR for message encoding/decoding, and b4a for buffer manipulation.
+* 
+* @param {string} network - A 64-character hex string representing the network identifier.
+* @returns {Promise<Object>} - Resolves to an object containing methods to join/leave topics and a flag indicating it's a Hyperswarm router.
+*/
 const hyperswarmRouter = async (network) => {
   return new Promise(async (resolve) => {
-
     // Validate the network parameter
     if (typeof network !== 'string' && network.length != 64) throw new Error('network must be a 64 character hex string');
-
     // Import required modules
     const Hyperswarm = require('hyperswarm');
     const goodbye = (await import('graceful-goodbye')).default;
     const b4a = require('b4a');
     const cbor = require('cbor');
-    
     // Initialize Hyperswarm and set up graceful shutdown
     const swarm = new Hyperswarm();
     goodbye(() => swarm.destroy());
-
     // Store connected peers and topic handlers
     const peers = {};
     const handlers = {};
@@ -48,16 +44,13 @@ const hyperswarmRouter = async (network) => {
     swarm.on('connection', (peer, info) => {
       const id = b4a.toString(peer.remotePublicKey, 'hex');
       peers[id] = peer; // Add peer to the peers object
-
       // Remove peer from the peers object when the connection closes
       peer.once('close', () => delete peers[id]);
-
       // Handle incoming data from the peer
       peer.on('data', async d => {
         const decoded = cbor.decode(b4a.from(d));
         if (handlers[decoded.topic]) await handlers[decoded.topic](decoded.data);
       });
-
       // Log connection errors
       peer.on('error', e => console.log(`Connection error: ${e}`));
     });
@@ -71,7 +64,6 @@ const hyperswarmRouter = async (network) => {
      */
     function join(topic, handler) {
       handlers[topic] = handler; // Register the handler for the topic
-
       // Return a broadcaster function for the topic
       const broadcaster = async (data) => {
         await broadcast(topic, data);
@@ -88,7 +80,6 @@ const hyperswarmRouter = async (network) => {
     function leave(topic) {
       if (!handlers[topic]) throw new Error(`trying to leave a topic:'${topic}' that does not exist would cause weird results.`);
       delete handlers[topic]; // Remove the topic handler
-
       // Return a dummy function to warn about broadcasting to a deleted topic
       return () => {
         console.warn(`Attempting to broadcast to a topic:'${topic}' that has been deleted`);
