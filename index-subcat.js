@@ -33,8 +33,10 @@ const hyperswarmRouter = async (network) => {
     async function broadcast(topic, data) {
       const encoded = b4a.from(cbor.encode({ topic, data }));
       return new Promise(async (done) => {
-        for (const peer of Object.values(peers[topic])) {
-          peer.write(encoded);
+        if (peers[topic] && Object.values(peers[topic]).length > 0) {  
+          for (const peer of Object.values(peers[topic])) {
+            peer.write(encoded);
+          }
         }
         done();
       });
