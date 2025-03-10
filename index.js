@@ -20,7 +20,8 @@ const hyperswarmRouter = async (network) => {
     const cbor = require('cbor');
     const Protomux = require('protomux');
     const c = require('compact-encoding');
-    let userbase;
+    let userbase
+    ,   hyperdown;
     
     // Initialize Hyperswarm and set up graceful shutdown
     const swarm = new Hyperswarm();
@@ -52,6 +53,7 @@ const hyperswarmRouter = async (network) => {
     // Handle new peer connections
     swarm.on('connection', (peer, info) => {
       if (userbase) userbase(peer); // experimental
+      if (hyperdown) hyperdown(peer); // experimental
       const id = b4a.toString(peer.remotePublicKey, 'hex');
       const mux = new Protomux(peer);
       const protocol = mux.createChannel({
