@@ -52,8 +52,8 @@ const hyperswarmRouter = async (network) => {
 
     // Handle new peer connections
     swarm.on('connection', (peer, info) => {
-      if (userbase) userbase(peer); // experimental
-      if (hyperdown) hyperdown(peer); // experimental
+      if (userbase) await userbase(peer); // experimental
+      if (hyperdown) await hyperdown(peer); // experimental
       const id = b4a.toString(peer.remotePublicKey, 'hex');
       const mux = new Protomux(peer);
       const protocol = mux.createChannel({
